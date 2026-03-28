@@ -5,6 +5,15 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 
 ---
 
+##  Research Questions
+- Which genres tend to have higher IMDB ratings?
+- Do TV shows perform better than movies?
+- Does release year affect content success?
+- How does country influence ratings?
+- Can we predict IMDb ratings using content features?
+
+---
+
 ##  Objectives
 - Analyze Netflix content data (movies & TV shows)
 - Identify factors affecting success (genre, country, year, etc.)
@@ -25,6 +34,7 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
   - Release Year
   - Country
   - Duration
+- Size: ~8800 samples
 
 ### 2. Netflix IMDB Scores
 - Source: Kaggle
@@ -33,6 +43,7 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
   - Type
   - IMDb Rating
   - Vote Count
+- Size: ~5200 samples
 
 ###  Data Enrichment
 The datasets are merged based on title names to enrich the Netflix dataset with rating information.
@@ -48,6 +59,27 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 5. Feature Engineering  
 6. Machine Learning Models  
 7. Evaluation & Interpretation  
+
+---
+
+##  Expected Insights
+- Certain genres (e.g., drama, documentary) may have higher ratings
+- TV shows and movies may differ in average ratings
+- Content released in recent years may show different trends
+
+---
+
+## Target & Inputs
+
+### - Target Variable
+- IMDB Rating
+
+### - Input Features
+- Type (Movie / TV Show)
+- Genre
+- Release Year
+- Country
+- Duration
 
 ---
 
