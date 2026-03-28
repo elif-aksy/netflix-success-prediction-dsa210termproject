@@ -10,7 +10,7 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 - Do TV shows perform better than movies?
 - Does release year affect content success?
 - How does country influence ratings?
-- Can we predict IMDb ratings using content features?
+- Can we predict IMDB ratings using content features?
 
 ---
 
@@ -41,7 +41,7 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 - Features:
   - Title
   - Type
-  - IMDb Rating
+  - IMDB Rating
   - Vote Count
 - Size: ~5200 samples
 
