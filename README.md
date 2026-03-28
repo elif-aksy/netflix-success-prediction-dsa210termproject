@@ -1,7 +1,7 @@
  Netflix Success Prediction
 
 ##  Project Overview
-This project aims to analyze and predict the success of Netflix movies and TV shows using data science and machine learning techniques. The goal is to identify which factors influence content success and build models to predict IMDb ratings.
+This project aims to analyze and predict the success of Netflix movies and TV shows using data science and machine learning techniques. The goal is to identify which factors influence content success and build models to predict IMDB ratings.
 
 ---
 
@@ -10,13 +10,13 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 - Identify factors affecting success (genre, country, year, etc.)
 - Perform exploratory data analysis (EDA)
 - Conduct statistical hypothesis testing
-- Build machine learning models to predict IMDb ratings
+- Build machine learning models to predict IMDB ratings
 
 ---
 
 ##  Datasets
 
-### 1. Netflix Titles Dataset
+### 1. Netflix Movies and TV Shows
 - Source: Kaggle
 - Features:
   - Title
@@ -26,9 +26,11 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
   - Country
   - Duration
 
-### 2. IMDb Ratings Dataset
+### 2. Netflix IMDB Scores
 - Source: Kaggle
 - Features:
+  - Title
+  - Type
   - IMDb Rating
   - Vote Count
 
@@ -81,7 +83,7 @@ netflix-success-prediction/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/netflix-success-prediction.git
+git clone https://github.com/elif-aksy/netflix-success-prediction-dsa210termproject.git
 ```
 2. Install dependencies:
 ```bash
