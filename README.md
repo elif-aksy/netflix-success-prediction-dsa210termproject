@@ -1,7 +1,16 @@
  Netflix Success Prediction
 
 ##  Project Overview
-This project aims to analyze and predict the success of Netflix movies and TV shows using data science and machine learning techniques. The goal is to identify which factors influence content success and build models to predict IMDb ratings.
+This project aims to analyze and predict the success of Netflix movies and TV shows using data science and machine learning techniques. The goal is to identify which factors influence content success and build models to predict IMDB ratings.
+
+---
+
+##  Research Questions
+- Which genres tend to have higher IMDB ratings?
+- Do TV shows perform better than movies?
+- Does release year affect content success?
+- How does country influence ratings?
+- Can we predict IMDB ratings using content features?
 
 ---
 
@@ -10,13 +19,13 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 - Identify factors affecting success (genre, country, year, etc.)
 - Perform exploratory data analysis (EDA)
 - Conduct statistical hypothesis testing
-- Build machine learning models to predict IMDb ratings
+- Build machine learning models to predict IMDB ratings
 
 ---
 
 ##  Datasets
 
-### 1. Netflix Titles Dataset
+### 1. Netflix Movies and TV Shows
 - Source: Kaggle
 - Features:
   - Title
@@ -25,12 +34,16 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
   - Release Year
   - Country
   - Duration
+- Size: ~8800 samples
 
-### 2. IMDb Ratings Dataset
+### 2. Netflix IMDB Scores
 - Source: Kaggle
 - Features:
-  - IMDb Rating
+  - Title
+  - Type
+  - IMDB Rating
   - Vote Count
+- Size: ~5200 samples
 
 ###  Data Enrichment
 The datasets are merged based on title names to enrich the Netflix dataset with rating information.
@@ -46,6 +59,27 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 5. Feature Engineering  
 6. Machine Learning Models  
 7. Evaluation & Interpretation  
+
+---
+
+##  Expected Insights
+- Certain genres (e.g., drama, documentary) may have higher ratings
+- TV shows and movies may differ in average ratings
+- Content released in recent years may show different trends
+
+---
+
+## Target & Inputs
+
+### - Target Variable
+- IMDB Rating
+
+### - Input Features
+- Type (Movie / TV Show)
+- Genre
+- Release Year
+- Country
+- Duration
 
 ---
 
@@ -81,7 +115,7 @@ netflix-success-prediction/
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/netflix-success-prediction.git
+git clone https://github.com/elif-aksy/netflix-success-prediction-dsa210termproject.git
 ```
 2. Install dependencies:
 ```bash
