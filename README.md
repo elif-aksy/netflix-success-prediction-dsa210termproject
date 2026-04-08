@@ -11,6 +11,7 @@ This project aims to analyze and predict the success of Netflix movies and TV sh
 - Does release year affect content success?
 - How does country influence ratings?
 - Can we predict IMDB ratings using content features?
+- Is popularity (vote count) correlated with perceived quality (IMDB rating)?
 
 ---
 
@@ -73,6 +74,7 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 
 ### - Target Variable
 - IMDB Rating
+- Composite score (weighted combination of normalized IMDB rating and log-transformed vote count)
 
 ### - Input Features
 - Type (Movie / TV Show)
@@ -80,13 +82,16 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 - Release Year
 - Country
 - Duration
+- Director (average IMDb rating per director)
+- Cast (average IMDb rating per cast member)
 
 ---
 
 ##  Machine Learning Models
 - Linear Regression  
 - Decision Tree  
-- Random Forest  
+- Random Forest
+- Gradient Boosting (XGBoost)
 
 ---
 
