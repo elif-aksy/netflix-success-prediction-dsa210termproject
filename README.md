@@ -108,7 +108,6 @@ netflix-success-prediction/
 │
 ├── data/              # Raw and processed datasets
 ├── notebooks/         # Jupyter notebooks (EDA, ML)
-├── src/               # Python scripts (optional)
 ├── results/           # Figures and outputs
 ├── requirements.txt   # Dependencies
 └── README.md
