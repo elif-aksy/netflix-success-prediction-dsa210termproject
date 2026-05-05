@@ -98,6 +98,8 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 ##  Evaluation Metrics
 - Mean Squared Error (MSE)  
 - R² Score  
+- Accuracy  
+- F1 Score  
 
 ---
 
@@ -107,7 +109,7 @@ The datasets are merged based on title names to enrich the Netflix dataset with 
 netflix-success-prediction/
 │
 ├── data/              # Raw and processed datasets
-├── notebooks/         # Jupyter notebooks (EDA)
+├── notebooks/         # Jupyter notebooks (EDA & ML)
 ├── requirements.txt   # Dependencies
 └── README.md
 ```
