@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Netflix Success Prediction – DSA 210</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --red: #e50914;
+      --dark: #141414;
+      --card: #1f1f1f;
+      --text: #e5e5e5;
+      --muted: #999;
+      --border: #333;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--dark); color: var(--text); font-family: 'Segoe UI', sans-serif; line-height: 1.6; }
+
+    /* NAV */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(20,20,20,0.95); backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 56px;
+    }
+    .nav-logo { color: var(--red); font-weight: 700; font-size: 1.1rem; letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 0.88rem; transition: color .2s; }
+    .nav-links a:hover { color: var(--text); }
+
+    /* HERO */
+    .hero {
+      background: linear-gradient(135deg, #1a0000 0%, #141414 60%);
+      padding: 5rem 2rem 4rem;
+      text-align: center;
+      border-bottom: 1px solid var(--border);
+    }
+    .hero-badge {
+      display: inline-block; background: var(--red); color: #fff;
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+      padding: 4px 12px; border-radius: 2px; margin-bottom: 1.2rem; text-transform: uppercase;
+    }
+    .hero h1 { font-size: clamp(1.8rem, 5vw, 3rem); font-weight: 800; margin-bottom: 0.8rem; }
+    .hero h1 span { color: var(--red); }
+    .hero p { color: var(--muted); max-width: 620px; margin: 0 auto 2rem; font-size: 1.05rem; }
+    .hero-meta { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+    .hero-meta span { color: var(--muted); font-size: 0.85rem; }
+    .hero-meta strong { color: var(--text); }
+    .btn { display: inline-block; background: var(--red); color: #fff; padding: 0.6rem 1.4rem; border-radius: 4px; text-decoration: none; font-weight: 600; font-size: 0.9rem; transition: opacity .2s; }
+    .btn:hover { opacity: 0.85; }
+    .btn-outline { background: transparent; border: 1px solid var(--muted); color: var(--text); margin-left: 0.6rem; }
+    .btn-outline:hover { border-color: var(--text); }
+
+    /* STATS ROW */
+    .stats { display: flex; justify-content: center; gap: 0; flex-wrap: wrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .stat { flex: 1; min-width: 140px; max-width: 200px; padding: 1.4rem 1rem; text-align: center; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat-val { font-size: 1.8rem; font-weight: 800; color: var(--red); }
+    .stat-label { font-size: 0.78rem; color: var(--muted); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* SECTIONS */
+    section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+    section + section { border-top: 1px solid var(--border); }
+    .section-tag { color: var(--red); font-size: 0.78rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.7rem; font-weight: 700; margin-bottom: 1.5rem; }
+    h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.8rem; color: var(--text); }
+
+    /* CARDS */
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; margin-top: 1rem; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.4rem; }
+    .card-num { font-size: 2rem; font-weight: 800; color: var(--red); }
+    .card p { color: var(--muted); font-size: 0.9rem; margin-top: 0.4rem; }
+
+    /* CHART CONTAINERS */
+    .chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+    .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.4rem; }
+    .chart-box canvas { max-height: 280px; }
+
+    /* HYPOTHESIS TABLE */
+    .hyp-table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.88rem; }
+    .hyp-table th { background: #2a2a2a; color: var(--muted); font-weight: 600; padding: 0.7rem 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+    .hyp-table td { padding: 0.8rem 1rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .hyp-table tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 3px; font-size: 0.75rem; font-weight: 700; }
+    .badge-reject { background: #1a3a1a; color: #4caf50; }
+    .badge-norej { background: #3a2a1a; color: #ff9800; }
+
+    /* ML RESULTS */
+    .model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .model-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.2rem; }
+    .model-card.best { border-color: var(--red); }
+    .model-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 0.6rem; }
+    .model-card.best .model-name::after { content: ' ★'; color: var(--red); }
+    .metric { display: flex; justify-content: space-between; font-size: 0.85rem; padding: 3px 0; }
+    .metric-val { color: var(--red); font-weight: 700; }
+
+    /* FINDINGS */
+    .finding { display: flex; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--border); }
+    .finding:last-child { border-bottom: none; }
+    .finding-num { color: var(--red); font-weight: 800; font-size: 1.1rem; min-width: 28px; }
+    .finding-text strong { display: block; margin-bottom: 2px; }
+    .finding-text span { color: var(--muted); font-size: 0.9rem; }
+
+    /* FOOTER */
+    footer { background: #0a0a0a; border-top: 1px solid var(--border); text-align: center; padding: 2rem; color: var(--muted); font-size: 0.85rem; }
+    footer a { color: var(--red); text-decoration: none; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">🎬 Netflix Success Prediction</span>
+  <ul class="nav-links">
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#eda">EDA</a></li>
+    <li><a href="#hypothesis">Hypothesis</a></li>
+    <li><a href="#ml">ML Models</a></li>
+    <li><a href="#findings">Findings</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-badge">DSA 210 · Spring 2025–2026</div>
+  <h1>Netflix <span>Success</span> Prediction</h1>
+  <p>Analyzing what makes Netflix content succeed using IMDB ratings, catalog metadata, and machine learning.</p>
+  <div class="hero-meta">
+    <span><strong>Author</strong> Elif Aksoy</span>
+    <span><strong>University</strong> Sabancı University</span>
+    <span><strong>Date</strong> May 18, 2026</span>
+  </div>
+  <a href="https://github.com/elif-aksy/netflix-success-prediction-dsa210termproject" class="btn">GitHub Repo</a>
+  <a href="#findings" class="btn btn-outline">Key Findings</a>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat"><div class="stat-val">3,955</div><div class="stat-label">Titles Analyzed</div></div>
+  <div class="stat"><div class="stat-val">88.2%</div><div class="stat-label">Best Accuracy</div></div>
+  <div class="stat"><div class="stat-val">0.844</div><div class="stat-label">Best F1 Score</div></div>
+  <div class="stat"><div class="stat-val">5</div><div class="stat-label">Hypothesis Tests</div></div>
+  <div class="stat"><div class="stat-val">4</div><div class="stat-label">ML Models</div></div>
+  <div class="stat"><div class="stat-val">33</div><div class="stat-label">Features (Extended)</div></div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview">
+  <div class="section-tag">Project Overview</div>
+  <h2>What drives Netflix content ratings?</h2>
+  <p style="color:var(--muted); max-width:720px; margin-bottom:1.5rem;">
+    Two Kaggle datasets were merged — Netflix catalog metadata and IMDB scores — to create a 3,955-title dataset.
+    The analysis spans exploratory data analysis, statistical hypothesis testing, and four machine learning models
+    evaluated on both regression and classification tasks.
+  </p>
+  <div class="card-grid">
+    <div class="card"><div class="card-num">8,807</div><h3>Netflix Catalog</h3><p>Movies & TV shows with genre, country, cast, director, duration</p></div>
+    <div class="card"><div class="card-num">5,283</div><h3>IMDB Dataset</h3><p>Titles with IMDB score, vote count, runtime, age certification</p></div>
+    <div class="card"><div class="card-num">3,955</div><h3>Merged Dataset</h3><p>Inner join on title — enriched with all dimensions for EDA and ML</p></div>
+  </div>
+</section>
+
+<!-- EDA -->
+<section id="eda">
+  <div class="section-tag">Exploratory Data Analysis</div>
+  <h2>What does the data look like?</h2>
+  <div class="chart-grid">
+
+    <!-- Movie vs TV Show -->
+    <div class="chart-box">
+      <h3>Average IMDB Score: Movie vs TV Show</h3>
+      <canvas id="typeChart"></canvas>
+    </div>
+
+    <!-- Top Genres -->
+    <div class="chart-box">
+      <h3>Top 10 Genres by Average IMDB Score</h3>
+      <canvas id="genreChart"></canvas>
+    </div>
+
+    <!-- Top Countries -->
+    <div class="chart-box">
+      <h3>Top Countries by Average IMDB Score</h3>
+      <canvas id="countryChart"></canvas>
+    </div>
+
+    <!-- Content Count -->
+    <div class="chart-box">
+      <h3>Content Count by Type</h3>
+      <canvas id="countChart"></canvas>
+    </div>
+
+  </div>
+</section>
+
+<!-- HYPOTHESIS -->
+<section id="hypothesis">
+  <div class="section-tag">Hypothesis Testing</div>
+  <h2>Statistical findings (α = 0.05)</h2>
+  <table class="hyp-table">
+    <thead>
+      <tr><th>#</th><th>Hypothesis</th><th>Test</th><th>Result</th><th>Key Statistic</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>H1</td>
+        <td>Movies and TV shows have the same mean IMDB score</td>
+        <td>Two-sample t-test</td>
+        <td><span class="badge badge-reject">Rejected</span></td>
+        <td>p ≈ 0 — TV shows score 0.80 pts higher</td>
+      </tr>
+      <tr>
+        <td>H2</td>
+        <td>All genres share the same mean IMDB score</td>
+        <td>One-way ANOVA + Tukey HSD</td>
+        <td><span class="badge badge-reject">Rejected</span></td>
+        <td>p ≈ 0 — 296/561 genre pairs differ</td>
+      </tr>
+      <tr>
+        <td>H3</td>
+        <td>Release year and IMDB score are uncorrelated</td>
+        <td>Pearson + Spearman</td>
+        <td><span class="badge badge-norej">Not Rejected</span></td>
+        <td>Spearman r = −0.018, p = 0.255</td>
+      </tr>
+      <tr>
+        <td>H4</td>
+        <td>Vote count and IMDB score are uncorrelated</td>
+        <td>Pearson + Spearman</td>
+        <td><span class="badge badge-reject">Rejected</span></td>
+        <td>Spearman r = 0.239, p ≈ 0</td>
+      </tr>
+      <tr>
+        <td>H5</td>
+        <td>All countries share the same mean IMDB score</td>
+        <td>One-way ANOVA</td>
+        <td><span class="badge badge-reject">Rejected</span></td>
+        <td>F = 8.18, p ≈ 0 — South Korea leads</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ML -->
+<section id="ml">
+  <div class="section-tag">Machine Learning</div>
+  <h2>Predicting content success</h2>
+  <p style="color:var(--muted); margin-bottom:1.5rem;">
+    Binary classification: success = IMDB score ≥ 7.0 (~39.5% of titles). F1 is the primary metric due to mild class imbalance.
+  </p>
+
+  <h3 style="margin-bottom:0.8rem; color:var(--muted);">Baseline Features (20 features)</h3>
+  <div class="model-grid">
+    <div class="model-card">
+      <div class="model-name">Logistic Regression</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.740</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.707</span></div>
+    </div>
+    <div class="model-card">
+      <div class="model-name">Decision Tree</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.743</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.633</span></div>
+    </div>
+    <div class="model-card">
+      <div class="model-name">Random Forest</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.770</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.697</span></div>
+    </div>
+    <div class="model-card best">
+      <div class="model-name">XGBoost</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.798</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.732</span></div>
+    </div>
+  </div>
+
+  <h3 style="margin: 1.8rem 0 0.8rem; color:var(--muted);">Extended Features (33 features — + Director LOO, Cast LOO, Country)</h3>
+  <div class="model-grid">
+    <div class="model-card">
+      <div class="model-name">Logistic Regression</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.765</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.703</span></div>
+    </div>
+    <div class="model-card">
+      <div class="model-name">Decision Tree</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.837</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.784</span></div>
+    </div>
+    <div class="model-card">
+      <div class="model-name">Random Forest</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.867</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.821</span></div>
+    </div>
+    <div class="model-card best">
+      <div class="model-name">XGBoost</div>
+      <div class="metric"><span>Accuracy</span><span class="metric-val">0.882</span></div>
+      <div class="metric"><span>F1</span><span class="metric-val">0.844</span></div>
+      <div class="metric"><span>AUC</span><span class="metric-val">~0.93</span></div>
+    </div>
+  </div>
+
+  <div class="chart-grid" style="margin-top:1.5rem;">
+    <div class="chart-box">
+      <h3>F1 Score Comparison — All Models</h3>
+      <canvas id="f1Chart"></canvas>
+    </div>
+    <div class="chart-box">
+      <h3>Top Feature Importances (Extended RF)</h3>
+      <canvas id="featChart"></canvas>
+    </div>
+  </div>
+</section>
+
+<!-- FINDINGS -->
+<section id="findings">
+  <div class="section-tag">Key Findings</div>
+  <h2>What we learned</h2>
+  <div style="margin-top:0.5rem;">
+    <div class="finding">
+      <div class="finding-num">1</div>
+      <div class="finding-text">
+        <strong>TV shows outperform movies</strong>
+        <span>TV shows score 0.80 pts higher on average (7.05 vs 6.25, p ≈ 0). Audiences self-select into series they expect to enjoy.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">2</div>
+      <div class="finding-text">
+        <strong>Genre is a strong quality signal</strong>
+        <span>Korean TV Shows consistently lead; Horror Movies score the lowest. 296 of 561 genre pairs differ significantly (Tukey HSD).</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">3</div>
+      <div class="finding-text">
+        <strong>Release year has no meaningful effect</strong>
+        <span>Spearman r = −0.018 (p = 0.255). Content age does not predict quality.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">4</div>
+      <div class="finding-text">
+        <strong>Country of origin matters</strong>
+        <span>South Korea (7.24) and Japan (7.09) lead. The US contributes the most titles (n=1,626) but sits below average (6.57).</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">5</div>
+      <div class="finding-text">
+        <strong>Popularity correlates with quality — but weakly</strong>
+        <span>Spearman r = 0.239 between vote count and IMDB score. Popularity alone is not a reliable predictor.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">6</div>
+      <div class="finding-text">
+        <strong>Director & cast reputation are the strongest predictors</strong>
+        <span>LOO-encoded director and cast features boosted XGBoost F1 by +0.112 (0.732 → 0.844). Who made it matters more than genre or country.</span>
+      </div>
+    </div>
+    <div class="finding">
+      <div class="finding-num">7</div>
+      <div class="finding-text">
+        <strong>Metadata explains ~39% of score variance</strong>
+        <span>Best regression model: Random Forest, R² = 0.386. The rest is subjective viewer experience — unobservable from catalog data.</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>Elif Aksoy · DSA 210 Introduction to Data Science · Sabancı University · 2025–2026</p>
+  <p style="margin-top:0.4rem;">
+    <a href="https://github.com/elif-aksy/netflix-success-prediction-dsa210termproject">GitHub Repository</a>
+  </p>
+</footer>
+
+<script>
+const RED = '#e50914';
+const MUTED = '#666';
+const TEXT = '#e5e5e5';
+const defaults = {
+  color: TEXT,
+  plugins: { legend: { labels: { color: TEXT, font: { size: 11 } } } },
+  scales: {
+    x: { ticks: { color: MUTED, font: { size: 10 } }, grid: { color: '#2a2a2a' } },
+    y: { ticks: { color: MUTED, font: { size: 10 } }, grid: { color: '#2a2a2a' } }
+  }
+};
+
+// Movie vs TV Show
+new Chart(document.getElementById('typeChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Movie', 'TV Show'],
+    datasets: [{ label: 'Mean IMDB Score', data: [6.25, 7.05],
+      backgroundColor: ['#555', RED], borderRadius: 4 }]
+  },
+  options: { ...defaults, plugins: { legend: { display: false } },
+    scales: { ...defaults.scales, y: { ...defaults.scales.y, min: 5.5, max: 7.5 } } }
+});
+
+// Content Count
+new Chart(document.getElementById('countChart'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Movies (2,461)', 'TV Shows (1,494)'],
+    datasets: [{ data: [2461, 1494], backgroundColor: [RED, '#444'], borderWidth: 0 }]
+  },
+  options: { plugins: { legend: { labels: { color: TEXT, font: { size: 11 } } } } }
+});
+
+// Top Genres
+new Chart(document.getElementById('genreChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Korean TV Shows','TV Thrillers','Anime Series','Romantic TV','Docuseries','Crime TV','TV Dramas','TV Action','British TV','Teen TV'],
+    datasets: [{ label: 'Avg IMDB Score', data: [7.24, 7.15, 7.10, 7.05, 6.98, 6.95, 6.92, 6.88, 6.85, 6.80],
+      backgroundColor: RED, borderRadius: 3 }]
+  },
+  options: { indexAxis: 'y', ...defaults,
+    plugins: { legend: { display: false } },
+    scales: { x: { ...defaults.scales.x, min: 6.5, max: 7.4 }, y: { ...defaults.scales.y } } }
+});
+
+// Top Countries
+new Chart(document.getElementById('countryChart'), {
+  type: 'bar',
+  data: {
+    labels: ['South Korea','Japan','Lebanon','UK','Australia','Egypt','China','Taiwan','Germany','United States'],
+    datasets: [{ label: 'Avg IMDB Score', data: [7.24, 7.09, 6.86, 6.86, 6.85, 6.81, 6.71, 6.64, 6.58, 6.57],
+      backgroundColor: ['#e50914','#e50914','#c00','#b00','#a00','#900','#800','#700','#600','#500'], borderRadius: 3 }]
+  },
+  options: { indexAxis: 'y', ...defaults,
+    plugins: { legend: { display: false } },
+    scales: { x: { ...defaults.scales.x, min: 6.3, max: 7.4 }, y: { ...defaults.scales.y } } }
+});
+
+// F1 comparison
+new Chart(document.getElementById('f1Chart'), {
+  type: 'bar',
+  data: {
+    labels: ['Logistic Reg', 'Decision Tree', 'Random Forest', 'XGBoost'],
+    datasets: [
+      { label: 'Baseline', data: [0.707, 0.633, 0.697, 0.732], backgroundColor: '#444', borderRadius: 3 },
+      { label: 'Extended', data: [0.703, 0.784, 0.821, 0.844], backgroundColor: RED, borderRadius: 3 }
+    ]
+  },
+  options: { ...defaults,
+    scales: { ...defaults.scales, y: { ...defaults.scales.y, min: 0.55, max: 0.9 } } }
+});
+
+// Feature importance
+new Chart(document.getElementById('featChart'), {
+  type: 'bar',
+  data: {
+    labels: ['director_loo','log_votes','duration_int','cast_loo','release_year','is_tvshow','rating_enc','genre_Docs','genre_Dramas','country_US'],
+    datasets: [{ label: 'Importance', data: [0.30, 0.25, 0.14, 0.11, 0.07, 0.04, 0.03, 0.02, 0.02, 0.01],
+      backgroundColor: [RED, RED, '#666','#555','#444','#333','#2a2a2a','#222','#222','#1a1a1a'], borderRadius: 3 }]
+  },
+  options: { indexAxis: 'y', ...defaults, plugins: { legend: { display: false } } }
+});
+</script>
+</body>
+</html>

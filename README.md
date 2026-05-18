@@ -132,6 +132,11 @@ jupyter notebook
 ```
 ---
 
+##  Project Website
+
+A summary website with interactive charts is available at:  
+**https://elif-aksy.github.io/netflix-success-prediction-dsa210termproject/**
+
 ##  Author
 - Elif Aksoy
 
